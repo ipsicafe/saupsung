@@ -1,0 +1,279 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>통합11구역 대지지분 모션</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one 9:16 "측량 도면" stage, five timed scenes, controls below */
+:root {
+  --ink: #0f2a5c;        /* 도면 청색 바탕 */
+  --ink-2: #173a78;      /* 막대 트랙 */
+  --line: rgba(196, 216, 255, .16);
+  --paper: #eef3ff;      /* 흰 선·글자 */
+  --muted: #9fb4dd;
+  --mark: #f5c33b;       /* 측량 표지 노랑 = 통합11구역 */
+  --page: #e7ebf3;
+  --page-fg: #1b2540;
+  --f-display: "Black Han Sans", "Noto Sans KR", sans-serif;
+  --f-body: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --f-num: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page: #0a1428; --page-fg: #dfe7f7; color-scheme: dark } }
+:root[data-theme="dark"] { --page: #0a1428; --page-fg: #dfe7f7; color-scheme: dark }
+
+body { background: var(--page); color: var(--page-fg); font-family: var(--f-body); }
+.wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  padding-block: 20px 28px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.stage {
+  width: min(100%, 430px); aspect-ratio: 9 / 16; max-width: 100%;
+  position: relative; overflow: hidden; border-radius: 6px;
+  container-type: inline-size;
+  background:
+    repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 8cqw),
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 8cqw),
+    radial-gradient(120% 80% at 70% 10%, #1d4590 0%, var(--ink) 60%);
+  color: var(--paper);
+  box-shadow: 0 20px 50px -20px rgba(10, 25, 60, .55);
+}
+.scene { position: absolute; inset: 0; padding: 9cqw 7cqw; display: flex; flex-direction: column;
+  opacity: 0; transition: opacity .6s ease; pointer-events: none; }
+.scene.on { opacity: 1; }
+.tag { font-family: var(--f-num); font-size: 3cqw; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+.h { font-family: var(--f-display); font-weight: 400; line-height: 1.12; text-wrap: balance; margin: 0; }
+.yel { color: var(--mark); }
+.rise { opacity: 0; transform: translateY(4cqw); transition: opacity .6s ease, transform .7s cubic-bezier(.2,.8,.2,1); }
+.on .rise { opacity: 1; transform: none; }
+.on .d1 { transition-delay: .25s } .on .d2 { transition-delay: .55s } .on .d3 { transition-delay: .9s } .on .d4 { transition-delay: 1.3s } .on .d5 { transition-delay: 1.8s }
+
+/* Scene 1 */
+.s1 { justify-content: space-between; }
+.s1 .h { font-size: 11cqw; margin-top: 4cqw; }
+.parcels { width: 100%; height: auto; }
+.parcels rect { fill: none; stroke: var(--paper); stroke-width: .6; stroke-dasharray: 200; stroke-dashoffset: 200; opacity: .55; }
+.parcels rect.hit { stroke: var(--mark); stroke-width: 1.4; opacity: 1; fill: rgba(245,195,59,0); transition: fill .8s ease 2.2s; }
+.on .parcels rect { animation: draw 1.6s ease forwards; }
+.on .parcels rect.hit { fill: rgba(245,195,59,.22); }
+.parcels text { fill: var(--mark); font-family: var(--f-display); font-size: 7px; opacity: 0; transition: opacity .6s ease 2.4s; }
+.on .parcels text { opacity: 1; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.s1 .sub { font-size: 4.3cqw; color: var(--muted); line-height: 1.6; }
+
+/* Scene 2: ranking */
+.s2 .h { font-size: 7.6cqw; margin: 2cqw 0 5cqw; }
+.rows { display: flex; flex-direction: column; gap: 1.9cqw; }
+.row { display: grid; grid-template-columns: 9cqw 21cqw 1fr 13cqw; align-items: center; gap: 1.6cqw; font-size: 3.4cqw; }
+.row .rk { font-family: var(--f-num); color: var(--muted); font-size: 3cqw; }
+.row .nm { font-weight: 700; white-space: nowrap; }
+.row .tr { height: 3.2cqw; background: var(--ink-2); border-radius: 1px; overflow: hidden; }
+.row .bar { height: 100%; width: 0; background: var(--paper); opacity: .78; transition: width 1.1s cubic-bezier(.2,.8,.2,1); }
+.row .v { font-family: var(--f-num); font-size: 3.1cqw; text-align: right; font-variant-numeric: tabular-nums; opacity: 0; transition: opacity .4s ease; }
+.on .row .v { opacity: 1; }
+.row.me { color: var(--mark); }
+.row.me .bar { background: var(--mark); opacity: 1; }
+.row.me .tr { outline: 1px solid var(--mark); outline-offset: 2px; }
+.row.dim { opacity: .62; }
+.note { margin-top: auto; font-size: 2.9cqw; color: var(--muted); line-height: 1.5; }
+
+/* Scene 3: spotlight */
+.s3 { justify-content: center; gap: 3cqw; }
+.big { font-family: var(--f-num); font-weight: 700; font-size: 25cqw; line-height: 1; color: var(--mark); font-variant-numeric: tabular-nums; letter-spacing: -.03em; }
+.big small { font-size: 9cqw; margin-left: 1cqw; }
+.pyeong { font-family: var(--f-display); font-size: 8.5cqw; }
+.chips { display: flex; flex-wrap: wrap; gap: 2.4cqw; margin-top: 4cqw; }
+.chip { border: 1px solid var(--paper); padding: 2cqw 3.4cqw; font-size: 3.8cqw; font-weight: 700; border-radius: 2px; }
+.chip.y { border-color: var(--mark); background: var(--mark); color: var(--ink); }
+.s3 .sub { font-size: 4.2cqw; color: var(--muted); line-height: 1.65; margin-top: 4cqw; }
+
+/* Scene 4: 단지별 */
+.s4 .h { font-size: 8cqw; margin: 2cqw 0 8cqw; }
+.cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5cqw; align-items: end; height: 62cqw; }
+.col { display: flex; flex-direction: column; align-items: center; gap: 2cqw; height: 100%; justify-content: flex-end; }
+.col .val { font-family: var(--f-num); font-weight: 700; font-size: 5.4cqw; opacity: 0; transition: opacity .4s ease; }
+.col .val i { font-style: normal; font-size: 3cqw; color: var(--muted); }
+.on .col .val { opacity: 1; }
+.col .pillar { width: 100%; height: 0; background: var(--paper); opacity: .85; transition: height 1.2s cubic-bezier(.2,.8,.2,1); }
+.col.top .pillar { background: var(--mark); opacity: 1; }
+.col.top .val { color: var(--mark); }
+.col .lb { font-weight: 900; font-size: 4.4cqw; }
+.col .lb span { display: block; font-weight: 400; font-size: 2.9cqw; color: var(--muted); text-align: center; }
+.avgline { position: relative; margin-top: 5cqw; font-size: 3.4cqw; color: var(--muted); line-height: 1.6; }
+
+/* Scene 5: outro */
+.s5 { justify-content: center; gap: 5cqw; }
+.s5 .h { font-size: 12cqw; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 3cqw; }
+.pair div { border-top: 2px solid var(--paper); padding-top: 3cqw; }
+.pair div.y { border-color: var(--mark); }
+.pair b { display: block; font-family: var(--f-display); font-weight: 400; font-size: 9cqw; }
+.pair .y b { color: var(--mark); }
+.pair span { font-size: 3.4cqw; color: var(--muted); }
+.unite { display: flex; align-items: center; gap: 2.4cqw; margin-top: 2cqw; }
+.unite span { flex: 1; text-align: center; border: 1px solid var(--mark); padding: 3cqw 0; font-weight: 900; font-size: 5cqw; color: var(--mark); }
+.unite em { font-style: normal; font-family: var(--f-num); color: var(--muted); font-size: 4.4cqw; }
+.on .unite span { animation: join 1.2s cubic-bezier(.2,.8,.2,1) 1.6s both; }
+@keyframes join { from { background: transparent; color: var(--mark); } to { background: var(--mark); color: var(--ink); } }
+.sign { margin-top: 6cqw; font-size: 3.2cqw; color: var(--muted); line-height: 1.6; }
+.sign strong { color: var(--paper); font-size: 4cqw; }
+
+/* progress */
+.prog { position: absolute; left: 7cqw; right: 7cqw; top: 4cqw; display: flex; gap: 1.2cqw; z-index: 2; }
+.prog i { flex: 1; height: 2px; background: rgba(238,243,255,.22); position: relative; overflow: hidden; }
+.prog i b { position: absolute; inset: 0; background: var(--paper); transform-origin: left; transform: scaleX(0); }
+
+/* controls */
+.ctrl { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.ctrl button { font: 700 14px var(--f-body); padding: 10px 18px; border-radius: 4px; border: 1px solid currentColor;
+  background: transparent; color: var(--page-fg); cursor: pointer; }
+.ctrl button.pri { background: var(--ink); border-color: var(--ink); color: #fff; }
+.ctrl button:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.hint { font-size: 12.5px; opacity: .7; text-align: center; max-width: 430px; line-height: 1.6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .scene, .rise, .row .bar, .col .pillar, .parcels rect, .parcels text { transition: none !important; animation: none !important; }
+  .parcels rect { stroke-dashoffset: 0; }
+}
+</style>
+
+<div class="wrap">
+  <div class="stage" id="stage" aria-live="polite">
+    <div class="prog" id="prog"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+
+    <!-- 1 -->
+    <section class="scene s1 on" data-i="0">
+      <div>
+        <div class="tag rise">둔산지구 · 통합재건축</div>
+        <h1 class="h rise d1">세대당<br>대지지분,<br><span class="yel">어디가 넓을까?</span></h1>
+      </div>
+      <svg class="parcels" viewBox="0 0 120 80" aria-hidden="true">
+        <rect x="2" y="2" width="22" height="16"/><rect x="26" y="2" width="18" height="16"/><rect x="46" y="2" width="26" height="16"/>
+        <rect x="74" y="2" width="20" height="16"/><rect x="96" y="2" width="22" height="16"/>
+        <rect x="2" y="20" width="16" height="22"/><rect x="20" y="20" width="24" height="22"/>
+        <rect class="hit" x="46" y="20" width="48" height="38"/>
+        <rect x="96" y="20" width="22" height="20"/><rect x="2" y="44" width="20" height="16"/><rect x="24" y="44" width="20" height="14"/>
+        <rect x="96" y="42" width="22" height="16"/><rect x="2" y="62" width="30" height="16"/><rect x="34" y="60" width="26" height="18"/>
+        <rect x="62" y="60" width="22" height="18"/><rect x="86" y="60" width="32" height="18"/>
+        <text x="70" y="41" text-anchor="middle">통합11</text>
+      </svg>
+      <p class="sub rise d4">17개 통합구역 중<br>통합11구역(가람·국화·청솔)의 위치를 확인해 보세요.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="scene s2" data-i="1">
+      <div class="tag rise">세대당 평균 대지지분 순위 · ㎡</div>
+      <h2 class="h rise d1">통합11구역,<br><span class="yel">둔산 전체 3위</span></h2>
+      <div class="rows" id="rows"></div>
+      <p class="note">11위~ 그룹·최하위 그룹은 범위 중 상단값으로 표시</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="scene s3" data-i="2">
+      <div class="tag rise">통합11구역 세대당 평균 대지지분</div>
+      <div class="big rise d1"><span id="cnt">0.0</span><small>㎡</small></div>
+      <div class="pyeong rise d2">약 16.5평</div>
+      <div class="chips rise d3">
+        <span class="chip y">17개 구역 중 3위</span>
+        <span class="chip">5,150세대 · 둔산 최대</span>
+        <span class="chip">종전 용적률 227%</span>
+      </div>
+      <p class="sub rise d4">큰 구역일수록 소형 평형이 섞여 평균이 낮아지기 쉽습니다.<br>통합11구역은 최대 규모에서도 상위권을 지켰습니다.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="scene s4" data-i="3">
+      <div class="tag rise">구역 내 단지별 · 세대당 평균</div>
+      <h2 class="h rise d1">가람이 이끌고<br>국화·청솔이 받칩니다</h2>
+      <div class="cols">
+        <div class="col top"><div class="val">19.5<i>평</i></div><div class="pillar" data-h="97"></div><div class="lb">가람<span>구역 내 최고</span></div></div>
+        <div class="col"><div class="val">15.7<i>평</i></div><div class="pillar" data-h="78"></div><div class="lb">국화<span>5개 단지</span></div></div>
+        <div class="col"><div class="val">14.7<i>평</i></div><div class="pillar" data-h="73"></div><div class="lb">청솔<span>&nbsp;</span></div></div>
+      </div>
+      <p class="avgline rise d4">세 단지 모두 둔산지구 평균(약 12~13평)보다 높습니다.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="scene s5" data-i="4">
+      <div class="tag rise">규모 1위 · 대지지분 3위</div>
+      <h2 class="h rise d1">사업성은<br>증명됐습니다</h2>
+      <h2 class="h rise d3 yel" style="font-size:9.6cqw">이제 남은 것은<br>가람·국화·청솔의 화합</h2>
+      <div class="unite rise d4"><span>가람</span><em>+</em><span>국화</span><em>+</em><span>청솔</span></div>
+      <p class="sign rise d5"><strong>둔산11 예비 주민대표단</strong><br>※ 세대당 평균 대지지분은 추정치이며, 정확한 수치는 공식 자료로 확인하세요.</p>
+    </section>
+  </div>
+
+  <div class="ctrl">
+    <button class="pri" id="btnPlay" type="button">일시정지</button>
+    <button id="btnReplay" type="button">처음부터</button>
+  </div>
+  <p class="hint">약 25초 분량의 세로 영상 구성입니다. 화면 녹화하면 릴스·쇼츠·카페 영상으로 바로 쓸 수 있습니다.</p>
+</div>
+
+<script>
+(function () {
+  var data = [
+    ["1위","통합13구역",57.2,"57.2"],["2위","통합2구역",57.1,"57.1"],["3위","통합11구역",54.4,"54.4",1],
+    ["4위","통합10구역",50.2,"50.2"],["5위","통합17구역",49.1,"49.1"],["6위","통합5구역",48.2,"48.2"],
+    ["7위","통합16구역",47.0,"47.0"],["8위","통합6구역",46.8,"46.8"],["9위","통합7구역",40.5,"40.5"],
+    ["10위","통합9구역",40.2,"40.2"],["11위~","5개 구역",39.6,"~39.6",0,1],["최하위","통합4·12",23.2,"~23.2",0,1]
+  ];
+  var rows = document.getElementById("rows"), MAX = 60;
+  data.forEach(function (d) {
+    var r = document.createElement("div");
+    r.className = "row" + (d[4] ? " me" : "") + (d[5] ? " dim" : "");
+    r.innerHTML = '<span class="rk">' + d[0] + '</span><span class="nm">' + d[1] + '</span><span class="tr"><span class="bar" data-w="' + (d[2] / MAX * 100) + '"></span></span><span class="v">' + d[3] + '</span>';
+    rows.appendChild(r);
+  });
+
+  var scenes = [].slice.call(document.querySelectorAll(".scene"));
+  var segs = [].slice.call(document.querySelectorAll("#prog b"));
+  var dur = [4000, 7000, 5000, 5500, 6000];
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var idx = 0, elapsed = 0, last = 0, playing = true, raf;
+  var cnt = document.getElementById("cnt");
+
+  function enter(i) {
+    scenes.forEach(function (s, k) { s.classList.toggle("on", k === i); });
+    var s = scenes[i];
+    s.querySelectorAll(".bar").forEach(function (b, k) {
+      b.style.width = "0"; b.style.transitionDelay = (0.9 + k * 0.12) + "s";
+      requestAnimationFrame(function () { requestAnimationFrame(function () { b.style.width = b.dataset.w + "%"; }); });
+    });
+    s.querySelectorAll(".row .v").forEach(function (v, k) { v.style.transitionDelay = (1.5 + k * 0.12) + "s"; });
+    s.querySelectorAll(".pillar").forEach(function (p, k) {
+      p.style.height = "0"; p.style.transitionDelay = (0.8 + k * 0.25) + "s";
+      requestAnimationFrame(function () { requestAnimationFrame(function () { p.style.height = p.dataset.h + "%"; }); });
+    });
+    s.querySelectorAll(".col .val").forEach(function (v, k) { v.style.transitionDelay = (1.7 + k * 0.25) + "s"; });
+    if (i === 2) cnt.textContent = reduce ? "54.4" : "0.0";
+  }
+
+  function tick(t) {
+    if (!last) last = t;
+    if (playing) elapsed += t - last;
+    last = t;
+    if (elapsed >= dur[idx]) { elapsed = 0; idx = (idx + 1) % scenes.length; enter(idx); }
+    segs.forEach(function (b, k) { b.style.transform = "scaleX(" + (k < idx ? 1 : k === idx ? Math.min(elapsed / dur[idx], 1) : 0) + ")"; });
+    if (idx === 2 && !reduce) {
+      var p = Math.min(Math.max((elapsed - 400) / 1600, 0), 1);
+      p = 1 - Math.pow(1 - p, 3);
+      cnt.textContent = (54.4 * p).toFixed(1);
+    }
+    raf = requestAnimationFrame(tick);
+  }
+
+  var bp = document.getElementById("btnPlay");
+  bp.addEventListener("click", function () { playing = !playing; bp.textContent = playing ? "일시정지" : "재생"; });
+  document.getElementById("btnReplay").addEventListener("click", function () {
+    idx = 0; elapsed = 0; playing = true; bp.textContent = "일시정지";
+    scenes[0].classList.remove("on"); void scenes[0].offsetWidth; enter(0);
+  });
+
+  enter(0);
+  raf = requestAnimationFrame(tick);
+})();
+</script>
+
+</body></html>
